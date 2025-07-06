@@ -4,7 +4,7 @@ export default function NotFound() {
   return (
     <main className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       <Image
-        src="/404rog.png"
+        src="/404Rog.png"
         alt="Frog mascot"
         width={100}
         height={100}

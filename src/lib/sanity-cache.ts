@@ -1,11 +1,3 @@
-import {
-  getPosts,
-  getProjects,
-  getProfile,
-  getLinks,
-  getLatestResume,
-} from './sanity';
-
 // Cache interfaces
 interface Post {
   _id: string;
@@ -63,6 +55,15 @@ const promises = {
   resume: null as Promise<Resume | null> | null,
 };
 
+// Helper function to fetch from API
+async function fetchFromAPI<T>(endpoint: string): Promise<T> {
+  const response = await fetch(`/api/${endpoint}`);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
+  }
+  return response.json();
+}
+
 // Cache functions
 export async function getCachedPosts(): Promise<Post[]> {
   if (cache.posts) {
@@ -73,7 +74,7 @@ export async function getCachedPosts(): Promise<Post[]> {
     return await promises.posts;
   }
 
-  promises.posts = getPosts();
+  promises.posts = fetchFromAPI<Post[]>('posts');
   const data = await promises.posts;
   cache.posts = data;
   return data;
@@ -88,7 +89,7 @@ export async function getCachedProjects(): Promise<Project[]> {
     return await promises.projects;
   }
 
-  promises.projects = getProjects();
+  promises.projects = fetchFromAPI<Project[]>('projects');
   const data = await promises.projects;
   cache.projects = data;
   return data;
@@ -103,7 +104,7 @@ export async function getCachedProfile(): Promise<Profile | null> {
     return await promises.profile;
   }
 
-  promises.profile = getProfile();
+  promises.profile = fetchFromAPI<Profile | null>('profile');
   const data = await promises.profile;
   cache.profile = data;
   return data;
@@ -118,7 +119,7 @@ export async function getCachedLinks(): Promise<Link[]> {
     return await promises.links;
   }
 
-  promises.links = getLinks();
+  promises.links = fetchFromAPI<Link[]>('links');
   const data = await promises.links;
   cache.links = data;
   return data;
@@ -133,7 +134,7 @@ export async function getCachedResume(): Promise<Resume | null> {
     return await promises.resume;
   }
 
-  promises.resume = getLatestResume();
+  promises.resume = fetchFromAPI<Resume | null>('resume');
   const data = await promises.resume;
   cache.resume = data;
   return data;
