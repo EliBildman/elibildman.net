@@ -5,7 +5,7 @@ import DataPreloader from './DataPreloader';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Eli Bildman Portfolio',
+  title: 'Eli Bildman',
   description: 'Portfolio website for Eli Bildman, Software Engineer.',
 };
 

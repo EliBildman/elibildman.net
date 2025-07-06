@@ -4,10 +4,10 @@ export default function NotFound() {
   return (
     <main className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       <Image
-        src="/40Frog.png"
+        src="/404rog.png"
         alt="Frog mascot"
-        width={128}
-        height={128}
+        width={100}
+        height={100}
         className="w-32 h-32 mb-6 object-contain"
       />
       <h1 className="text-7xl font-extrabold text-black mb-4">404</h1>

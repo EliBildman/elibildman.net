@@ -96,14 +96,13 @@ export default function Home() {
         <div className="flex flex-row items-center gap-8">
           <div className="flex flex-col gap-3 flex-1">
             <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
-              {profile?.name || 'Eli Bildman'}
+              {profile?.name}
             </h1>
             <h2 className="text-lg text-gray-500 font-semibold">
-              {profile?.title || 'Software Engineer'}
+              {profile?.title}
             </h2>
             <p className="text-base text-gray-700 leading-relaxed">
-              {profile?.bio ||
-                "Hi, I'm Eli. I'm a software engineer at Building36. I work on smart home automation, IoT, and full-stack web technologies. Here are some things I'm proud of."}
+              {profile?.bio}
             </p>
           </div>
           <Image
