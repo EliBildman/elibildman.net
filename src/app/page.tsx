@@ -1,103 +1,164 @@
-import Image from "next/image";
+'use client';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+// ('use client');
+
+// Placeholder posts data (could be loaded from a JSON file or DB in the future)
+const posts = [
+  {
+    id: 1,
+    title: 'How I Built My Portfolio',
+    description: 'A behind-the-scenes look at building this site.',
+    image: '/posts_images/one.jpg', // Placeholder image path
+    link: '/posts/portfolio-build',
+    external: false,
+  },
+  {
+    id: 2,
+    title: 'Open Source Project: BetaPoker',
+    description: 'Check out my open source poker agent on GitHub.',
+    image: '/posts_images/one.jpg',
+    link: 'https://github.com/EliBildman/BetaPoker',
+    external: true,
+  },
+  {
+    id: 3,
+    title: 'Open Source Project: BetaPoker',
+    description: 'Check out my open source poker agent on GitHub.',
+    image: '/posts_images/one.jpg',
+    link: 'https://github.com/EliBildman/BetaPoker',
+    external: true,
+  },
+  {
+    id: 4,
+    title: 'Open Source Project: BetaPoker',
+    description: 'Check out my open source poker agent on GitHub.',
+    image: '/posts_images/one.jpg',
+    link: 'https://github.com/EliBildman/BetaPoker',
+    external: true,
+  },
+];
+
+function PostSkeleton() {
+  return (
+    <div className="rainbow-border-wrapper animate-pulse">
+      <div className="rainbow-border-inner flex items-center gap-6 p-6 rounded-xl min-h-[112px]">
+        <div className="w-24 h-24 bg-gray-200 rounded-md" />
+        <div className="flex-1 ml-6 space-y-3">
+          <div className="h-6 bg-gray-200 rounded w-1/2" />
+          <div className="h-4 bg-gray-200 rounded w-2/3" />
+        </div>
+        <span className="ml-2 text-sky-200 text-2xl">→</span>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [loading, setLoading] = useState(true);
+  const [showPosts, setShowPosts] = useState(false);
+  const [gutterWidth, setGutterWidth] = useState(120);
+  const [hasAnimated, setHasAnimated] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  useEffect(() => {
+    function updateGutter() {
+      const contentWidth = 672; // max-w-2xl
+      const winWidth = window.innerWidth;
+      const gutter = Math.max((winWidth - contentWidth) / 2, 60);
+      setGutterWidth(gutter);
+    }
+    updateGutter();
+    window.addEventListener('resize', updateGutter);
+    return () => window.removeEventListener('resize', updateGutter);
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!loading) {
+      const showTimer = setTimeout(() => setShowPosts(true), 10);
+      // Set hasAnimated to true after the last post's animation finishes
+      const totalAnim = 700 + (posts.length - 1) * 120;
+      const animTimer = setTimeout(() => setHasAnimated(true), totalAnim);
+      return () => {
+        clearTimeout(showTimer);
+        clearTimeout(animTimer);
+      };
+    } else {
+      setShowPosts(false);
+      setHasAnimated(false);
+    }
+  }, [loading]);
+
+  return (
+    <main className="max-w-2xl w-full mx-auto mt-8 pt-2 pb-6 px-2 relative z-10">
+      <div className="flex flex-row items-center gap-8">
+        <div className="flex flex-col gap-3 flex-1">
+          <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
+            Eli Bildman
+          </h1>
+          <h2 className="text-lg text-gray-500 font-semibold">
+            Software Engineer
+          </h2>
+          <p className="text-base text-gray-700 leading-relaxed">
+            Hi, I'm Eli. I'm a software engineer at Building36. I work on smart
+            home automation, IoT, and full-stack web technologies. Here are some
+            things I'm proud of.
+          </p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <img
+          src="/profile.jpeg" // Replace with actual image path
+          alt="Profile photo"
+          className="w-40 h-40 object-cover rounded-xl border border-gray-200 bg-gray-100"
+        />
+      </div>
+      {/* Subtle rainbow divider */}
+      <div className="w-full h-0.5 my-8 rounded-full bg-gradient-to-r from-pink-400 via-yellow-400 via-green-400 via-sky-400 to-purple-400 opacity-60 rainbow-animate" />
+      <section>
+        <div className="flex flex-col gap-8">
+          {loading
+            ? Array.from({ length: 3 }).map((_, i) => <PostSkeleton key={i} />)
+            : posts.map((post, idx) => (
+                <div
+                  key={post.id}
+                  className={`rainbow-border-wrapper ${
+                    !hasAnimated ? 'fade-in-up pointer-events-none' : ''
+                  }`}
+                  style={
+                    !hasAnimated ? { animationDelay: `${idx * 120}ms` } : {}
+                  }
+                >
+                  <a
+                    href={post.link}
+                    target={post.external ? '_blank' : undefined}
+                    rel={post.external ? 'noopener noreferrer' : undefined}
+                    className="group block"
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <div className="rainbow-border-inner flex items-center gap-6 p-6 rounded-xl min-h-[112px]">
+                      <img
+                        src={post.image}
+                        // alt={post.title}
+                        className="w-24 h-24 object-cover rounded-md border border-gray-200 bg-gray-100"
+                      />
+                      <div className="flex-1 ml-6">
+                        <div className="text-xl font-semibold text-gray-900">
+                          {post.title}
+                        </div>
+                        <div className="text-gray-600 text-base mt-1">
+                          {post.description}
+                        </div>
+                      </div>
+                      <span className="ml-2 text-sky-500 text-2xl">→</span>
+                    </div>
+                  </a>
+                </div>
+              ))}
+        </div>
+      </section>
+    </main>
   );
 }
