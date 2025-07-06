@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import Link from 'next/link';
 import Navbar from './Navbar';
-import Footer from './Footer';
+import FooterWrapper from './FooterWrapper';
+import DataPreloader from './DataPreloader';
 import './globals.css';
 
 const geistSans = Geist({
@@ -32,10 +33,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased bg-gray-50 min-h-screen flex flex-col">
-        <Navbar />
-        <div className="flex-1 px-4">{children}</div>
-        <Footer />
+      <body className="antialiased bg-gray-50 min-h-screen">
+        <DataPreloader />
+        <div className="flex flex-col min-h-screen">
+          <div id="navbar">
+            <Navbar />
+          </div>
+          <div className="flex-1 px-4">{children}</div>
+          <div id="footer">
+            <FooterWrapper />
+          </div>
+        </div>
       </body>
     </html>
   );
