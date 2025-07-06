@@ -18,7 +18,6 @@ function Swirl({
   size,
   top,
   side,
-  y,
   offset,
 }: {
   color: string;

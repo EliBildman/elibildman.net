@@ -1,11 +1,13 @@
-import Link from 'next/link';
+import Image from 'next/image';
 
 export default function NotFound() {
   return (
     <main className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-      <img
+      <Image
         src="/40Frog.png"
         alt="Frog mascot"
+        width={128}
+        height={128}
         className="w-32 h-32 mb-6 object-contain"
       />
       <h1 className="text-7xl font-extrabold text-black mb-4">404</h1>

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { getCachedProjects } from '../../lib/sanity-cache';
 
@@ -50,9 +51,11 @@ function ProjectImage({ src, alt }: { src?: string; alt: string }) {
     return null;
   }
   return (
-    <img
+    <Image
       src={src}
       alt={alt}
+      width={192}
+      height={192}
       className="w-48 h-48 object-cover rounded-xl border border-gray-200 bg-gray-100 flex-shrink-0"
       onError={() => setError(true)}
     />

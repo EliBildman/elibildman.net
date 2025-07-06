@@ -1,6 +1,6 @@
 'use client';
-import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { getCachedPosts, getCachedProfile } from '../lib/sanity-cache';
 
 interface Post {
@@ -62,7 +62,6 @@ function getFaviconUrl(link: string) {
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const [gutterWidth, setGutterWidth] = useState(120);
   const [posts, setPosts] = useState<Post[]>([]);
   const [profile, setProfile] = useState<Profile | null>(null);
 
@@ -83,18 +82,6 @@ export default function Home() {
       }
     }
     fetchData();
-  }, []);
-
-  useEffect(() => {
-    function updateGutter() {
-      const contentWidth = 672; // max-w-2xl
-      const winWidth = window.innerWidth;
-      const gutter = Math.max((winWidth - contentWidth) / 2, 60);
-      setGutterWidth(gutter);
-    }
-    updateGutter();
-    window.addEventListener('resize', updateGutter);
-    return () => window.removeEventListener('resize', updateGutter);
   }, []);
 
   const isExternalLink = (url: string) => {
@@ -119,9 +106,11 @@ export default function Home() {
                 "Hi, I'm Eli. I'm a software engineer at Building36. I work on smart home automation, IoT, and full-stack web technologies. Here are some things I'm proud of."}
             </p>
           </div>
-          <img
+          <Image
             src={profile?.profileImage || '/profile.jpeg'}
             alt="Profile photo"
+            width={160}
+            height={160}
             className="w-40 h-40 object-cover rounded-xl border border-gray-200 bg-gray-100"
           />
         </div>
@@ -133,7 +122,7 @@ export default function Home() {
         <div className="flex flex-col gap-8">
           {loading
             ? Array.from({ length: 3 }).map((_, i) => <PostSkeleton key={i} />)
-            : posts.map((post, idx) => (
+            : posts.map((post) => (
                 <div key={post._id} className="rainbow-border-wrapper">
                   <a
                     href={post.link}
@@ -147,9 +136,11 @@ export default function Home() {
                     style={{ textDecoration: 'none' }}
                   >
                     <div className="rainbow-border-inner flex items-center gap-6 p-6 rounded-xl min-h-[112px]">
-                      <img
+                      <Image
                         src={post.image || getFaviconUrl(post.link)}
                         alt={post.title}
+                        width={96}
+                        height={96}
                         className={`w-24 h-24 object-cover rounded-md border border-gray-200 bg-gray-100 ${post.image ? '' : 'p-6 object-contain'}`}
                       />
                       <div className="flex-1 ml-6">

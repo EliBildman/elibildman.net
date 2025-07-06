@@ -15,7 +15,7 @@ export default function PDFViewerInner() {
   useEffect(() => {
     const originalWarn = console.warn;
     const originalError = console.error;
-    function filterAbortException(...args: any[]) {
+    function filterAbortException(...args: unknown[]) {
       if (
         args.some(
           (arg) =>
@@ -27,7 +27,7 @@ export default function PDFViewerInner() {
       }
       return originalWarn.apply(console, args);
     }
-    function filterAbortExceptionError(...args: any[]) {
+    function filterAbortExceptionError(...args: unknown[]) {
       if (
         args.some(
           (arg) =>
@@ -48,7 +48,6 @@ export default function PDFViewerInner() {
   }, []);
 
   const [numPages, setNumPages] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [containerWidth, setContainerWidth] = useState<number | undefined>(
     undefined
@@ -66,7 +65,7 @@ export default function PDFViewerInner() {
         } else {
           setError('No resume found');
         }
-      } catch (err) {
+      } catch {
         setError('Failed to load resume');
       }
     }
@@ -186,12 +185,9 @@ export default function PDFViewerInner() {
           file={resumeUrl}
           onLoadSuccess={({ numPages }) => {
             setNumPages(numPages);
-            setLoading(false);
-            setError(null);
           }}
-          onLoadError={(err) => {
+          onLoadError={() => {
             setError('Failed to load PDF.');
-            setLoading(false);
           }}
           loading={<div className="text-gray-500 my-8">Loading PDF…</div>}
           error={<div className="text-red-500 my-8">Failed to load PDF.</div>}
