@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server';
 import { getLatestResume } from '../../../../lib/sanity';
 
-export async function GET(req: NextRequest) {
+export async function GET(_: NextRequest) {
   const resume = await getLatestResume();
   const pdfUrl = resume?.pdfUrl;
   if (!pdfUrl) {
