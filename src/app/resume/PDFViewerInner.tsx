@@ -61,7 +61,7 @@ export default function PDFViewerInner() {
       try {
         const resume = await getCachedResume();
         if (resume?.pdfUrl) {
-          setResumeUrl(resume.pdfUrl);
+          setResumeUrl('/api/resume/pdf');
         } else {
           setError('No resume found');
         }
@@ -118,7 +118,7 @@ export default function PDFViewerInner() {
   const handleDownload = () => {
     if (resumeUrl) {
       const link = document.createElement('a');
-      link.href = resumeUrl;
+      link.href = '/api/resume/pdf';
       link.download = DOWNLOAD_NAME;
       document.body.appendChild(link);
       link.click();

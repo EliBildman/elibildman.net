@@ -8,8 +8,8 @@ import { getCachedProjects } from '../../lib/sanity-cache';
 function ProjectSkeleton() {
   return (
     <div className="animate-pulse">
-      <div className="flex items-center gap-14 p-8 bg-white rounded-2xl min-h-[220px]">
-        <div className="w-48 h-48 bg-gray-200 rounded-xl flex-shrink-0" />
+      <div className="flex items-center gap-8 sm:gap-14 p-6 sm:p-8 bg-white rounded-2xl min-h-[220px]">
+        <div className="w-32 h-32 sm:w-48 sm:h-48 bg-gray-200 rounded-xl flex-shrink-0" />
         <div className="flex-1 flex flex-col justify-center space-y-4">
           <div className="h-8 bg-gray-200 rounded w-1/3" />
           <div className="space-y-2">
@@ -56,7 +56,7 @@ function ProjectImage({ src, alt }: { src?: string; alt: string }) {
       alt={alt}
       width={192}
       height={192}
-      className="w-48 h-48 object-cover rounded-xl border border-gray-200 bg-gray-100 flex-shrink-0"
+      className="w-32 h-32 sm:w-48 sm:h-48 object-cover rounded-xl border border-gray-200 bg-gray-100 flex-shrink-0"
       onError={() => setError(true)}
     />
   );
@@ -106,7 +106,7 @@ export default function ProjectsPage() {
             />
           )}
           <div
-            className={`group flex items-center gap-14 p-8 bg-white rounded-2xl transition-all min-h-[220px] relative ${
+            className={`group flex items-center gap-8 sm:gap-14 p-6 sm:p-8 bg-white rounded-2xl transition-all min-h-[220px] relative ${
               project.url ? 'cursor-pointer' : ''
             }`}
             style={{ minHeight: '220px' }}
