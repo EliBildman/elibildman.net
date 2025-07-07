@@ -118,7 +118,10 @@ export default function ProjectsPage() {
                 <span className="sr-only">View {project.title}</span>
               </Link>
             )}
-            <ProjectImage src={project.image} alt={project.title} />
+            {/* Desktop image (left) */}
+            <div className="hidden sm:block">
+              <ProjectImage src={project.image} alt={project.title} />
+            </div>
             <div className="flex-1 flex flex-col justify-center">
               <div className="flex flex-wrap items-baseline gap-3 mb-4">
                 <h2 className="text-3xl font-bold text-gray-900 transition-colors m-0 p-0">
@@ -136,6 +139,10 @@ export default function ProjectsPage() {
                     ))}
                   </div>
                 )}
+              </div>
+              {/* Mobile image (between tags and description) */}
+              <div className="block sm:hidden mb-4">
+                <ProjectImage src={project.image} alt={project.title} />
               </div>
               <p className="text-base text-gray-700 font-normal leading-relaxed mb-2 max-w-[90%]">
                 {project.description}

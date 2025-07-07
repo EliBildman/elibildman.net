@@ -89,30 +89,50 @@ export default function Home() {
   };
 
   return (
-    <main className="max-w-2xl w-full mx-auto mt-8 pt-2 pb-6 px-2 relative z-10">
+    <main className="max-w-2xl w-full mx-auto pt-4 pb-6 px-2 relative z-10">
       {loading ? (
         <BioSkeleton />
       ) : (
-        <div className="flex flex-row items-center gap-8">
-          <div className="flex flex-col gap-3 flex-1">
-            <h1 className="text-4xl font-extrabold tracking-tight text-gray-900">
-              {profile?.name || 'Eli Bildman'}
-            </h1>
-            <h2 className="text-lg text-gray-500 font-semibold">
-              {profile?.title || 'Software Engineer'}
-            </h2>
-            <p className="text-base text-gray-700 leading-relaxed">
-              {profile?.bio ||
-                "Hi, I'm Eli. I'm a software engineer at Building36. I work on smart home automation, IoT, and full-stack web technologies. Here are some things I'm proud of."}
-            </p>
+        <div className="w-full">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-8 w-full mb-2">
+            {/* Left column: name, image, bio on mobile; name, bio on desktop */}
+            <div className="flex flex-col flex-1 min-w-0 items-center sm:items-start sm:justify-start sm:gap-3">
+              <div className="flex flex-row w-full justify-between items-start mt-0 mb-2">
+                <div className="flex flex-col items-start mt-0">
+                  <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 mt-0 mb-0">
+                    {profile?.name || 'Eli Bildman'}
+                  </h1>
+                  <h2 className="text-lg text-gray-500 font-semibold mt-0 mb-0">
+                    {profile?.title || 'Software Engineer'}
+                  </h2>
+                </div>
+                {/* Image: show here on mobile, hide on desktop */}
+                <Image
+                  src={profile?.profileImage || '/profile.jpeg'}
+                  alt="Profile photo"
+                  width={112}
+                  height={112}
+                  className="object-cover rounded-xl border border-gray-200 bg-gray-100 w-24 h-24 flex-shrink-0 sm:hidden ml-2 sm:ml-6"
+                  style={{ aspectRatio: '1 / 1' }}
+                />
+              </div>
+              <div className="w-full mt-1 sm:mt-0">
+                <p className="text-base text-gray-700 leading-relaxed">
+                  {profile?.bio ||
+                    "Hi, I'm Eli. I'm a software engineer. Here are some things I'm proud of."}
+                </p>
+              </div>
+            </div>
+            {/* Right column: image only on desktop */}
+            <Image
+              src={profile?.profileImage || '/profile.jpeg'}
+              alt="Profile photo"
+              width={160}
+              height={160}
+              className="object-cover rounded-xl border border-gray-200 bg-gray-100 w-40 h-40 flex-shrink-0 mt-0 mb-0 hidden sm:block"
+              style={{ aspectRatio: '1 / 1' }}
+            />
           </div>
-          <Image
-            src={profile?.profileImage || '/profile.jpeg'}
-            alt="Profile photo"
-            width={160}
-            height={160}
-            className="w-40 h-40 object-cover rounded-xl border border-gray-200 bg-gray-100"
-          />
         </div>
       )}
       {/* Subtle rainbow divider */}
@@ -141,7 +161,7 @@ export default function Home() {
                         alt={post.title}
                         width={96}
                         height={96}
-                        className={`w-24 h-24 object-cover rounded-md border border-gray-200 bg-gray-100 ${post.image ? '' : 'p-6 object-contain'}`}
+                        className={`w-24 h-24 object-cover rounded-md border border-gray-200 bg-gray-100 hidden sm:block ${post.image ? '' : 'p-6 object-contain'}`}
                       />
                       <div className="flex-1 ml-6">
                         <div className="text-xl font-semibold text-gray-900">
