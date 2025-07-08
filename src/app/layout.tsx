@@ -7,6 +7,11 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Eli Bildman',
   description: 'Portfolio website for Eli Bildman, Software Engineer.',
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
