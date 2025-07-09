@@ -37,7 +37,9 @@ export default defineType({
     defineField({
       name: 'link',
       title: 'Link',
-      type: 'url',
+      type: 'string',
+      description:
+        'External URL (e.g., https://example.com) or internal path (e.g., /projects)',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
