@@ -6,6 +6,14 @@ export default defineType({
   type: 'document',
   fields: [
     defineField({
+      name: 'order',
+      title: 'Display Order',
+      type: 'number',
+      description:
+        'Lower numbers appear first. Projects with the same order will be sorted alphabetically by title.',
+      validation: (Rule: any) => Rule.required().integer().positive(),
+    }),
+    defineField({
       name: 'title',
       title: 'Title',
       type: 'string',

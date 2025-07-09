@@ -33,10 +33,11 @@ export async function getPosts() {
 // Fetch all projects
 export async function getProjects() {
   return await client.fetch(`
-    *[_type == "project"] | order(_createdAt desc) {
+    *[_type == "project"] | order(order asc, title asc) {
       _id,
       title,
       slug,
+      order,
       description,
       url,
       tags,

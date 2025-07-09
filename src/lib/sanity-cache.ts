@@ -11,6 +11,7 @@ interface Post {
 interface Project {
   _id: string;
   title: string;
+  order: number;
   description: string;
   url?: string;
   tags: string[];
