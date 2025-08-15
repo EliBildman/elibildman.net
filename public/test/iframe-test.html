@@ -1,0 +1,29 @@
+﻿<!-- iframe-test.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Iframe Offer Widget</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            margin: 2em
+        }
+
+        button {
+            padding: 1em;
+            width: 200px;
+            margin: 10px
+        }
+    </style>
+</head>
+<body>
+    <h2>Widget Iframe Test Page</h2>
+    <button onclick="window.parent.postMessage('review-page', '*')">Accept</button>
+    <button onclick="window.parent.postMessage('decline-page', '*')">Decline</button>
+    <button onclick="window.parent.postMessage('close-page', '*')">Remind Later</button>
+    <script>
+    window.parent.postMessage('ready', '*');
+    </script>
+</body>
+</html>
