@@ -61,7 +61,9 @@ export default function PDFViewerInner() {
       try {
         const resume = await getCachedResume();
         if (resume?.pdfUrl) {
-          setResumeUrl('/api/resume/pdf');
+          // Add timestamp to force browser to reload PDF when resume changes
+          const timestamp = Date.now();
+          setResumeUrl(`/api/resume/pdf?t=${timestamp}`);
         } else {
           setError('No resume found');
         }
@@ -118,7 +120,7 @@ export default function PDFViewerInner() {
   const handleDownload = () => {
     if (resumeUrl) {
       const link = document.createElement('a');
-      link.href = '/api/resume/pdf';
+      link.href = resumeUrl;
       link.download = DOWNLOAD_NAME;
       document.body.appendChild(link);
       link.click();
@@ -137,12 +139,6 @@ export default function PDFViewerInner() {
   if (!resumeUrl) {
     return (
       <div className="w-full max-w-[700px] px-2 sm:px-0 flex flex-col items-center">
-        <div
-          className="mb-3 px-4 py-0.5 border border-gray-300 rounded-md bg-white text-gray-600 transition text-base font-medium"
-          style={{ width: containerWidth }}
-        >
-          Download as PDF
-        </div>
         <div className="w-full flex flex-col items-center">
           <div className="w-full shadow border rounded overflow-hidden bg-white">
             <div className="animate-pulse">
@@ -172,15 +168,28 @@ export default function PDFViewerInner() {
       ref={containerRef}
       className="w-full max-w-[700px] px-2 sm:px-0 flex flex-col items-center"
     >
-      <button
-        onClick={handleDownload}
-        className="mb-3 px-4 py-0.5 border border-gray-300 rounded-md bg-white text-gray-600 hover:text-gray-900 transition text-base font-medium"
-        style={{ width: containerWidth }}
-        aria-label="Download resume as PDF"
-      >
-        Download as PDF
-      </button>
-      <div className="w-full flex flex-col items-center">
+      <div className="w-full flex flex-col items-center relative">
+        {numPages && (
+          <button
+            onClick={handleDownload}
+            className="absolute top-2 left-2 z-10 p-2 bg-white hover:bg-gray-50 border border-gray-300 rounded-md shadow-md transition-all duration-200 hover:shadow-lg"
+            aria-label="Download resume as PDF"
+          >
+            <svg
+              className="w-4 h-4 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              />
+            </svg>
+          </button>
+        )}
         <Document
           file={resumeUrl}
           onLoadSuccess={({ numPages }) => {

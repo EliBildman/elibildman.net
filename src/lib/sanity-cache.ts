@@ -38,13 +38,28 @@ interface Resume {
   pdfUrl: string;
 }
 
-// Global cache storage
+// Cache entry with timestamp
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+
+// Cache configuration
+const CACHE_DURATION = {
+  posts: 5 * 60 * 1000, // 5 minutes
+  projects: 5 * 60 * 1000, // 5 minutes
+  profile: 10 * 60 * 1000, // 10 minutes
+  links: 10 * 60 * 1000, // 10 minutes
+  resume: 1 * 60 * 1000, // 1 minute (resume changes frequently)
+};
+
+// Global cache storage with timestamps
 const cache = {
-  posts: null as Post[] | null,
-  projects: null as Project[] | null,
-  profile: null as Profile | null,
-  links: null as Link[] | null,
-  resume: null as Resume | null,
+  posts: null as CacheEntry<Post[]> | null,
+  projects: null as CacheEntry<Project[]> | null,
+  profile: null as CacheEntry<Profile | null> | null,
+  links: null as CacheEntry<Link[]> | null,
+  resume: null as CacheEntry<Resume | null> | null,
 };
 
 // Promise storage to prevent duplicate requests
@@ -56,19 +71,30 @@ const promises = {
   resume: null as Promise<Resume | null> | null,
 };
 
+// Helper function to check if cache is still valid
+function isCacheValid<T>(
+  cacheEntry: CacheEntry<T> | null,
+  duration: number
+): boolean {
+  if (!cacheEntry) return false;
+  return Date.now() - cacheEntry.timestamp < duration;
+}
+
 // Helper function to fetch from API
 async function fetchFromAPI<T>(endpoint: string): Promise<T> {
-  const response = await fetch(`/api/${endpoint}`);
+  const response = await fetch(`/api/${endpoint}`, {
+    cache: 'no-store', // Disable Next.js caching for fresh data
+  });
   if (!response.ok) {
     throw new Error(`Failed to fetch ${endpoint}: ${response.statusText}`);
   }
   return response.json();
 }
 
-// Cache functions
+// Cache functions with automatic expiration
 export async function getCachedPosts(): Promise<Post[]> {
-  if (cache.posts) {
-    return cache.posts;
+  if (isCacheValid(cache.posts, CACHE_DURATION.posts)) {
+    return cache.posts!.data;
   }
 
   if (promises.posts) {
@@ -77,13 +103,13 @@ export async function getCachedPosts(): Promise<Post[]> {
 
   promises.posts = fetchFromAPI<Post[]>('posts');
   const data = await promises.posts;
-  cache.posts = data;
+  cache.posts = { data, timestamp: Date.now() };
   return data;
 }
 
 export async function getCachedProjects(): Promise<Project[]> {
-  if (cache.projects) {
-    return cache.projects;
+  if (isCacheValid(cache.projects, CACHE_DURATION.projects)) {
+    return cache.projects!.data;
   }
 
   if (promises.projects) {
@@ -92,13 +118,13 @@ export async function getCachedProjects(): Promise<Project[]> {
 
   promises.projects = fetchFromAPI<Project[]>('projects');
   const data = await promises.projects;
-  cache.projects = data;
+  cache.projects = { data, timestamp: Date.now() };
   return data;
 }
 
 export async function getCachedProfile(): Promise<Profile | null> {
-  if (cache.profile) {
-    return cache.profile;
+  if (isCacheValid(cache.profile, CACHE_DURATION.profile)) {
+    return cache.profile!.data;
   }
 
   if (promises.profile) {
@@ -107,13 +133,13 @@ export async function getCachedProfile(): Promise<Profile | null> {
 
   promises.profile = fetchFromAPI<Profile | null>('profile');
   const data = await promises.profile;
-  cache.profile = data;
+  cache.profile = { data, timestamp: Date.now() };
   return data;
 }
 
 export async function getCachedLinks(): Promise<Link[]> {
-  if (cache.links) {
-    return cache.links;
+  if (isCacheValid(cache.links, CACHE_DURATION.links)) {
+    return cache.links!.data;
   }
 
   if (promises.links) {
@@ -122,13 +148,13 @@ export async function getCachedLinks(): Promise<Link[]> {
 
   promises.links = fetchFromAPI<Link[]>('links');
   const data = await promises.links;
-  cache.links = data;
+  cache.links = { data, timestamp: Date.now() };
   return data;
 }
 
 export async function getCachedResume(): Promise<Resume | null> {
-  if (cache.resume) {
-    return cache.resume;
+  if (isCacheValid(cache.resume, CACHE_DURATION.resume)) {
+    return cache.resume!.data;
   }
 
   if (promises.resume) {
@@ -137,8 +163,39 @@ export async function getCachedResume(): Promise<Resume | null> {
 
   promises.resume = fetchFromAPI<Resume | null>('resume');
   const data = await promises.resume;
-  cache.resume = data;
+  cache.resume = { data, timestamp: Date.now() };
   return data;
+}
+
+// Function to force refresh specific data types
+export async function refreshResume(): Promise<Resume | null> {
+  cache.resume = null;
+  promises.resume = null;
+  return await getCachedResume();
+}
+
+export async function refreshPosts(): Promise<Post[]> {
+  cache.posts = null;
+  promises.posts = null;
+  return await getCachedPosts();
+}
+
+export async function refreshProjects(): Promise<Project[]> {
+  cache.projects = null;
+  promises.projects = null;
+  return await getCachedProjects();
+}
+
+export async function refreshProfile(): Promise<Profile | null> {
+  cache.profile = null;
+  promises.profile = null;
+  return await getCachedProfile();
+}
+
+export async function refreshLinks(): Promise<Link[]> {
+  cache.links = null;
+  promises.links = null;
+  return await getCachedLinks();
 }
 
 // Function to clear cache (useful for development or when you need fresh data)
@@ -165,4 +222,18 @@ export async function preloadAllData() {
     getCachedLinks(),
     getCachedResume(),
   ]);
+}
+
+// Function to clear specific cache types
+export function clearCacheByType(
+  type: 'posts' | 'projects' | 'profile' | 'links' | 'resume'
+) {
+  cache[type] = null;
+  promises[type] = null;
+}
+
+// Function to clear all caches and return fresh data
+export async function refreshAllData() {
+  clearCache();
+  return await preloadAllData();
 }
